@@ -1,23 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-typedef struct lista Lista;
-
+#include <allegro5/allegro_primitives.h>
+#include "allegro5/allegro_image.h"
+#include "allegro5/allegro_font.h"
 #include "funcoes.h"
 
-struct lista {
-	int info;
-	Lista * prox;
-};
+//#include "common.c"
 
-struct geo {
-	double x1, y1, x2, y2, thickness;
-	int r,g,b;
-	struct geo *prox;
-};
 #ifdef testegeo
-	bool inicializar();
+//	bool inicializar();
 #endif
 
 int main (void) {
@@ -40,23 +32,23 @@ int main (void) {
 	imprime2(l); /* imprimirá: 11 15 20 */
 	libera(l);
 #endif
-#ifdef testegeo
+#ifdef testegeo 
+	//char nomedoarquivo[100];
 	if (!inicializar())
         	return -1;
-	printf("\n\nTestando as funcoes de retangulo\n\n");
-	struct geo *geo;
-	geo = inicgeo();
-	inseregeo(&geo, 1., 4., 315., 300., 255, 255, 255, 5.);
-	imprimegeo(geo);
-	inseregeo(&geo, -1, 250., 420., 200., 255, 0, 255, 10.);
-	inseregeo(&geo, 15., 9., 600., 380.,0, 255, 255, 15.);
-	inseregeo(&geo, -1, 320., 240., 200., 0, 255, 0, 2.);
-	imprimegeo(geo);
-	calcarea(geo);
-	desenha(geo,0.5,0);
-	desenha(geo,1,1);
+	printf("\n\nTestando as funcoes de geometrias\n\n");
+	al_flip_display();
+	ListaGen *listagen;
+	listagen = inicgeogen();
+	inserepelatela(&listagen);
+	//printf("Digite o nome do arquivo:");
+	//scanf("%s",nomedoarquivo);
+	//leituraarqgen(&listagen,"primeira.geo");//nomedoarquivo);
+	//imprimegeogen(listagen);
+	//desenhagen(listagen,0.05,0);
+	//desenhagen(listagen,0.05,1);
 	fechajanela();
-	liberageo(geo);
+	//liberageo(geo);
 #endif
 	return 0;
 }

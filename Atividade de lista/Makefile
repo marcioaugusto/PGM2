@@ -3,7 +3,7 @@
 all: lista
 
 geometrias: funcoes.c main.c
-	gcc -ogeometrias -Dtestegeo funcoes.c main.c -Wall -lallegro -lallegro_primitives -g
+	gcc -ogeometrias -Dtestegeo funcoes.c main.c -Wall -lallegro -lallegro_primitives -lallegro_image -lallegro_font -lm -g -lallegro_ttf
 
 lista: main.c funcoes.c
 	gcc -olista -Dtestelista funcoes.c main.c -Wall -g

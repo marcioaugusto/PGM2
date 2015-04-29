@@ -1,13 +1,67 @@
+#define PI 3.141592
+
+enum tipo{circ=1,retang,triang};
+typedef enum tipo Tipo;
+
+struct ponto2D{
+    double x;
+    double y;
+};
+typedef struct ponto2D Ponto2D;
+/*
+struct geo{
+	double x1,y1,x2,y2,thickness;
+	int r,g,b;
+	struct geo *prox;
+};
+*/
+/* Define um nó genérico */
+struct listagen {
+	int   tipo;
+	void *info;
+	struct listagen *prox;
+};
+typedef struct listagen ListaGen;
+
+struct lista {
+	int info;
+	struct lista * prox;
+};
+typedef struct lista Lista;
+
+struct retang{
+	double x1,y1,x2,y2,thickness;
+	int r,g,b;
+};
+typedef struct retang Retangulo;
+
+struct circ{
+	double x,y,raio,thickness;
+	int r,g,b;
+};
+typedef struct circ Circulo;
+
+struct triang{
+	double x1,y1,x2,y2,x3,y3,thickness;
+	int r,g,b;
+};
+typedef struct triang Triangulo;
+
+
+
 #ifdef testegeo
-struct geo* inicgeo(void);
-void inseregeo(struct geo ** lista,double x1,double y1,double x2, double y2,int r, int g, int b, double thickness);
-void imprimegeo(struct geo *lista);
-void liberageo (struct geo* l);
-double calcarea (struct geo* l);
-void desenha(struct geo* l,double tempo,bool i);
+void leituraarqgen(ListaGen **lista, char nomedoarquivo[]);
+void inserepelatela(ListaGen **lista);
+ListaGen *inicgeogen(void);
+void imprimegeogen(ListaGen *lista);
+void desenhagen(ListaGen *p, double tempo, bool i);
 bool inicializar();
 void fechajanela();
+void insereretang(ListaGen** lista,double x1,double y1,double x2, double y2,int r, int g, int b, double thickness);
+void inserecirc(ListaGen** lista, double x, double y, double raio, int r, int g, int b, double thickness);
+void inseretriang(ListaGen** lista, double x1, double y1,double x2, double y2,double x3, double y3, int r, int g, int b, double thickness);
 #endif
+
 #ifdef testelista
 Lista* insere (Lista* l, int i);
 void insere2 (Lista** l, int i);
@@ -22,3 +76,5 @@ void retira2 (Lista** l, int v);
 void libera (Lista* l);
 void insereord(Lista** l, int i);
 #endif
+
+/*Ideia (: desenho mais matematico*/
