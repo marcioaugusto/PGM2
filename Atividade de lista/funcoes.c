@@ -553,10 +553,3 @@ void retira2 (Lista** l, int v) {
 }
 
 #endif
-
- 
-
-
-
-
-
