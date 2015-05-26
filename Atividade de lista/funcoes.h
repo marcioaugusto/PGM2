@@ -1,3 +1,14 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <math.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_ttf.h>
+
 #define PI 3.141592
 
 enum tipo{circ=1,retang,triang};
@@ -60,6 +71,10 @@ void fechajanela();
 void insereretang(ListaGen** lista,double x1,double y1,double x2, double y2,int r, int g, int b, double thickness);
 void inserecirc(ListaGen** lista, double x, double y, double raio, int r, int g, int b, double thickness);
 void inseretriang(ListaGen** lista, double x1, double y1,double x2, double y2,double x3, double y3, int r, int g, int b, double thickness);
+void exibir_texto_centralizado2(char msg[20]);
+void exibir_texto_centralizado();
+void manipular_entrada(ALLEGRO_EVENT evento);
+
 #endif
 
 #ifdef testelista

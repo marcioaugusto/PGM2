@@ -1,13 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
+/*****************************************************
+*
+* Desenvolvedor: Marcio A. Augusto
+*
+* Engenharia Eletrônica
+* Programação de Computadores II
+* IFSC - Semestre 2015/1
+*
+******************************************************/
 #include "funcoes.h"
-#include "allegro5/allegro_font.h"
-#include "allegro5/allegro_image.h"
-#include <allegro5/allegro_ttf.h>
 
 #ifdef testegeo
 const int LARGURA_TELA = 640;
@@ -18,78 +18,155 @@ ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
 ALLEGRO_BITMAP *botao_sair = NULL, *botao_abre_arquivo = 0;
 ALLEGRO_FONT *font;
 
+char str[17];
+
 void inserepelatela(ListaGen **lista) {
 
 	int sair = 0;
+	bool concluido = false;
 	int na_area_central = 0;
 	int q=0;
 	Ponto2D ponto[3];
 
 	printf("\nHá dois botões na tela.\n");
 	printf("\nFaça tres pontos fora dos botoes.\n");
-        
+	al_set_target_bitmap(al_get_backbuffer(janela));
+	/*while (!sair)
+    {
+        while (!al_is_event_queue_empty(fila_eventos))
+        {
+            ALLEGRO_EVENT evento;
+            al_wait_for_event(fila_eventos, &evento);
+ 			if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
+ 				sair = 1;
+ 			}
+            if (!concluido)
+            {
+                manipular_entrada(evento);
+ 
+                if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER)
+                {
+                    concluido = true;
+                }
+            }
+ 
+            if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            {
+                sair = 1;
+            }
+        }
+ 
+        al_map_rgb(0, 0, 255);
+ 
+        if (!concluido)
+        {
+            al_draw_text(font, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
+                        (ALTURA_TELA / 2 - al_get_font_ascent(font)) / 2,
+                        ALLEGRO_ALIGN_CENTRE, "Melhor Pontuação! Nome:");
+        }
+        else
+        {
+            al_draw_text(font, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
+                        (ALTURA_TELA / 2 - al_get_font_ascent(font)) / 2,
+                        ALLEGRO_ALIGN_CENTRE, "1º Lugar");
+        }
+ 
+        exibir_texto_centralizado();
+ 
+        al_flip_display();
+    }*/
 	while (!sair) {
-        	// Verificamos se há eventos na fila
-        	while (!al_is_event_queue_empty(fila_eventos)) {
-            		ALLEGRO_EVENT evento;
-            		al_wait_for_event(fila_eventos, &evento);
-            		if (evento.type == ALLEGRO_EVENT_MOUSE_AXES) { // Se o evento foi de movimentação do mouse
-                		// Verificamos se ele está sobre a região do retângulo central
-                		if (evento.mouse.x >= LARGURA_TELA - 10 - al_get_bitmap_width(botao_abre_arquivo) &&
-    				evento.mouse.x <= LARGURA_TELA -10 &&
-                    		evento.mouse.y >= ALTURA_TELA - 10 - al_get_bitmap_height(botao_sair) - al_get_bitmap_height(botao_abre_arquivo)  && evento.mouse.y <= ALTURA_TELA-10 - al_get_bitmap_height(botao_sair)) {
-                    			
+		ALLEGRO_EVENT evento;
+		// Verificamos se há eventos na fila
+		while (!al_is_event_queue_empty(fila_eventos)) {
+			if (evento.type == ALLEGRO_EVENT_KEY_DOWN && evento.keyboard.keycode == ALLEGRO_KEY_ENTER)
+                {
+                    sair = 1;
+                }
+			ALLEGRO_EVENT evento;
+			al_wait_for_event(fila_eventos, &evento);
+			if (evento.type == ALLEGRO_EVENT_MOUSE_AXES) { // Se o evento foi de movimentação do mouse
+				// Verificamos se ele está sobre a região do retângulo central
+				if (evento.mouse.x >= LARGURA_TELA - 10 - al_get_bitmap_width(botao_abre_arquivo) &&evento.mouse.x <= LARGURA_TELA -10 &&
+				evento.mouse.y >= ALTURA_TELA - 10 - al_get_bitmap_height(botao_sair) - al_get_bitmap_height(botao_abre_arquivo)  && evento.mouse.y <= ALTURA_TELA-10 - al_get_bitmap_height(botao_sair)) {
 					na_area_central = 1;
-                		}
-                		else {
-                    			na_area_central = 0;
-                		}
-	 	        }
-            		// Ou se o evento foi um clique do mouse
-            		else if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
-                		if (evento.mouse.x >= LARGURA_TELA - al_get_bitmap_width(botao_sair) - 10 &&
-                    			evento.mouse.x <= LARGURA_TELA - 10 && evento.mouse.y <= ALTURA_TELA - 10 &&
-                    			evento.mouse.y >= ALTURA_TELA - al_get_bitmap_height(botao_sair) - 10) {
-                    		
+				}
+				else {
+						na_area_central = 0;
+				}
+			}
+			// Ou se o evento foi um clique do mouse
+			else if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
+				if (evento.mouse.x >= LARGURA_TELA - al_get_bitmap_width(botao_sair) - 10 &&
+						evento.mouse.x <= LARGURA_TELA - 10 && evento.mouse.y <= ALTURA_TELA - 10 &&
+						evento.mouse.y >= ALTURA_TELA - al_get_bitmap_height(botao_sair) - 10) {//se o click foi sobre o botão sair
 					sair = 1;
-		                }
+				}
 				// Verificamos se ele está sobre a região do botao abre arquivo
-                		else if (evento.mouse.x >= LARGURA_TELA - 10 - al_get_bitmap_width(botao_abre_arquivo) &&
-    				evento.mouse.x <= LARGURA_TELA -10 &&
-                    		evento.mouse.y >= ALTURA_TELA - 10 - al_get_bitmap_height(botao_sair) - al_get_bitmap_height(botao_abre_arquivo)  && evento.mouse.y <= ALTURA_TELA-10 - al_get_bitmap_height(botao_sair)) {
+				else if (evento.mouse.x >= LARGURA_TELA - 10 - al_get_bitmap_width(botao_abre_arquivo) && evento.mouse.x <= LARGURA_TELA -10 &&
+				evento.mouse.y >= ALTURA_TELA - 10 - al_get_bitmap_height(botao_abre_arquivo) - al_get_bitmap_height(botao_abre_arquivo)  && evento.mouse.y <= ALTURA_TELA-10 - al_get_bitmap_height(botao_sair)) {
 					leituraarqgen(lista,"primeira.geo");
 					desenhagen(*lista,0,1);
-		                }
-				else{				
+				}
+				else
+				{
+					//printa e salva ponto
 					al_draw_filled_circle(evento.mouse.x, evento.mouse.y,1, al_map_rgb(255, 255, 255));
 					ponto[q].x = evento.mouse.x;
 					ponto[q].y = evento.mouse.y;
 					q ++;
-					if (q==3){
-					inseretriang(lista,ponto[0].x,ponto[0].y,ponto[1].x,ponto[1].y,ponto[2].x,ponto[2].y,255, 255, 255,3);
-					al_draw_filled_triangle(ponto[0].x,ponto[0].y,ponto[1].x,ponto[1].y,ponto[2].x,ponto[2].y,al_map_rgb(255, 255, 255));
-					al_draw_triangle(ponto[0].x,ponto[0].y,ponto[1].x,ponto[1].y,ponto[2].x,ponto[2].y,al_map_rgb(0, 0, 0),2);
-					q = 0;
+					if (q==3) {
+						inseretriang(lista,ponto[0].x,ponto[0].y,ponto[1].x,ponto[1].y,ponto[2].x,ponto[2].y,255, 255, 255,3);
+						al_draw_filled_triangle(ponto[0].x,ponto[0].y,ponto[1].x,ponto[1].y,ponto[2].x,ponto[2].y,al_map_rgb(255, 255, 255));
+						al_draw_triangle(ponto[0].x,ponto[0].y,ponto[1].x,ponto[1].y,ponto[2].x,ponto[2].y,al_map_rgb(0, 0, 0),2);
+						q = 0;
 					}
 				}
-	            	}
-		al_set_target_bitmap(botao_abre_arquivo);
-		if (!na_area_central)
-		    al_clear_to_color(al_map_rgb(255, 255, 255));
-		else
-		    al_clear_to_color(al_map_rgb(0, 255, 0));
-		    al_draw_textf(font, al_map_rgb(0, 0, 0), al_get_bitmap_width(botao_sair)/2, al_get_bitmap_height(botao_sair)/2 -14,ALLEGRO_ALIGN_CENTRE, "Abre");
-		    al_draw_rectangle(0,0, al_get_bitmap_width(botao_abre_arquivo), al_get_bitmap_height(botao_abre_arquivo), al_map_rgb(0,0,0),10);
+			}
+			if (evento.type == ALLEGRO_EVENT_KEY_CHAR) {
+    			puts("teclado");
+    			if (evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && strlen(str) != 0) {
+		            str[strlen(str) - 1] = '\0';
+		        }
+		        else if (strlen(str) <= 16) {
+		            char temp[] = {evento.keyboard.unichar, '\0'};
+		            /*if (evento.keyboard.unichar == ' ') {
+		                strcat(str, temp);
+		            }
+		            else if (evento.keyboard.unichar >= '0' &&
+		                     evento.keyboard.unichar <= '9') {
+		                strcat(str, temp);
+		            }
+		            else if (evento.keyboard.unichar >= 'A' &&
+		                     evento.keyboard.unichar <= 'Z') {
+		                strcat(str, temp);
+		            }
+		            else if (evento.keyboard.unichar >= 'a' &&
+		                     evento.keyboard.unichar <= 'z') {
+		                strcat(str, temp);
+		            }*/
+		            strcat(str,temp);
+		        }
+		    }
+			al_set_target_bitmap(botao_abre_arquivo);
+			if (!na_area_central)
+		    	al_clear_to_color(al_map_rgb(255, 255, 255));
+			else
+		    	al_clear_to_color(al_map_rgb(0, 255, 0));
+			al_draw_textf(font, al_map_rgb(0, 0, 0), al_get_bitmap_width(botao_sair)/2, al_get_bitmap_height(botao_sair)/2 -14,ALLEGRO_ALIGN_CENTRE, "Abre");
+			al_draw_rectangle(0,0, al_get_bitmap_width(botao_abre_arquivo), al_get_bitmap_height(botao_abre_arquivo), al_map_rgb(0,0,0),10);
 
-		// Desenhamos os retângulos na tela
-		al_set_target_bitmap(al_get_backbuffer(janela));
-		al_draw_bitmap(botao_abre_arquivo, LARGURA_TELA -			al_get_bitmap_width(botao_abre_arquivo) - 10,
+			// Desenha os retângulos e o texto na tela
+			al_set_target_bitmap(al_get_backbuffer(janela));
+			al_clear_to_color(al_map_rgb(0, 150, 0));
+			exibir_texto_centralizado();
+			al_draw_bitmap(botao_abre_arquivo, LARGURA_TELA -			al_get_bitmap_width(botao_abre_arquivo) - 10,
 			ALTURA_TELA - al_get_bitmap_height(botao_sair) - al_get_bitmap_height(botao_abre_arquivo) - 10, 0);
-		al_draw_bitmap(botao_sair, LARGURA_TELA - al_get_bitmap_width(botao_sair) - 10,
-		               ALTURA_TELA - al_get_bitmap_height(botao_sair) - 10, 0);
+			al_draw_bitmap(botao_sair, LARGURA_TELA - al_get_bitmap_width(botao_sair) - 10,
+			ALTURA_TELA - al_get_bitmap_height(botao_sair) - 10, 0);
 	 
-		// Atualiza a tela
-		al_flip_display();	        	
+			// Atualiza a tela
+			al_flip_display();	        	
 		}
 	
 	}
@@ -208,9 +285,9 @@ void calcareagen(ListaGen *p){
 		break;
 		case circ: {        /* converte para círculo e calcula área */        		
 			Circulo *c = (Circulo*) p->info;
-		        printf("Circulo de area = %.2f\n",2 * PI * 							c->raio * c->raio);
+			  printf("Circulo de area = %.2f\n",2 * PI * 							c->raio * c->raio);
 		}
-	        break;
+		  break;
 	}
 }
 
@@ -263,70 +340,78 @@ void fechajanela() {
 
 bool inicializar()
 {
+
     if (!al_init())
     {
-        fprintf(stderr, "Falha ao inicializar a biblioteca Allegro.\n");
+	  fprintf(stderr, "Falha ao inicializar a biblioteca Allegro.\n");
+	  return false;
+    }
+
+    if (!al_install_keyboard())
+    {
+        fprintf(stderr, "Falha ao inicializar teclado.\n");
         return false;
     }
 
     if (!al_init_primitives_addon())
     {
-        fprintf(stderr, "Falha ao inicializar add-on de primitivas.\n");
-        return false;
+	  fprintf(stderr, "Falha ao inicializar add-on de primitivas.\n");
+	  return false;
     }
  
     al_init_font_addon();//habilita o uso de fontes
 
     if (!al_init_ttf_addon())
     {
-        fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
-        return false;
+	  fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
+	  return false;
     }
 
     font = al_load_font("DejaVuSans.ttf", 20, 0);
     if (!font)
     {
-        fprintf(stderr, "Falha ao carregar a fonte.\n");
-        return false;
+	  fprintf(stderr, "Falha ao carregar a fonte.\n");
+	  return false;
     }
 
     janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
     if (!janela)
     {
-        fprintf(stderr, "Falha ao criar janela.\n");
-        return false;
+	  fprintf(stderr, "Falha ao criar janela.\n");
+	  return false;
     }
     al_set_window_title(janela, "Marcio Augusto");
     al_clear_to_color(al_map_rgb(0, 150, 0));
+    exibir_texto_centralizado2("Hello World!");
 
     // Torna apto o uso de mouse na aplicação
     if (!al_install_mouse())
     {
-        fprintf(stderr, "Falha ao inicializar o mouse.\n");
-        al_destroy_display(janela);
-        return -1;
+	  fprintf(stderr, "Falha ao inicializar o mouse.\n");
+	  al_destroy_display(janela);
+	  return -1;
     }
 
     // Atribui o cursor padrão do sistema para ser usado
     if (!al_set_system_mouse_cursor(janela, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT))
     {
-        fprintf(stderr, "Falha ao atribuir ponteiro do mouse.\n");
-        al_destroy_display(janela);
-        return -1;
+	  fprintf(stderr, "Falha ao atribuir ponteiro do mouse.\n");
+	  al_destroy_display(janela);
+	  return -1;
     }
 
 	// Alocamos o botão para fechar a aplicação
-    	botao_sair = al_create_bitmap(100, 50);
-    	if (!botao_sair) {
-        	fprintf(stderr, "Falha ao criar botão de saída.\n");
-        	al_destroy_bitmap(botao_abre_arquivo);
-        	al_destroy_display(janela);
-        	return -1;
-    	}
+	botao_sair = al_create_bitmap(100, 50);
+	if (!botao_sair) {
+		fprintf(stderr, "Falha ao criar botão de saída.\n");
+		al_destroy_bitmap(botao_abre_arquivo);
+		al_destroy_display(janela);
+		return -1;
+	}
 
 	// Colorimos o bitmap do botão de sair
-        al_set_target_bitmap(botao_sair);
-        al_clear_to_color(al_map_rgb(255, 0, 0));
+	  al_set_target_bitmap(botao_sair);
+	  al_clear_to_color(al_map_rgb(255, 0, 0));
 	al_draw_rectangle(0,0, al_get_bitmap_width(botao_sair), al_get_bitmap_height(botao_sair), al_map_rgb(0,0,0),10);   
 
 	//escrevemos no bitmap do botao sair
@@ -334,28 +419,29 @@ bool inicializar()
 	al_draw_textf(font, al_map_rgb(0, 0, 0), al_get_bitmap_width(botao_sair)/2, al_get_bitmap_height(botao_sair)/2 - 14,ALLEGRO_ALIGN_CENTRE, "sair");
 
 	// Alocamos o retângulo botao de abrir arquivo
-    	botao_abre_arquivo = al_create_bitmap(100 , 50);
-    	if (!botao_abre_arquivo) {
-        	fprintf(stderr, "Falha ao criar bitmap.\n");
-        	al_destroy_display(janela);
-        	return -1;
-    	}
+	botao_abre_arquivo = al_create_bitmap(100 , 50);
+	if (!botao_abre_arquivo) {
+		fprintf(stderr, "Falha ao criar bitmap.\n");
+		al_destroy_display(janela);
+		return -1;
+	}
 
 	// Colorimos o bitmap do botão central
-        al_set_target_bitmap(botao_abre_arquivo);
-        al_clear_to_color(al_map_rgb(255, 255, 255));
+	  al_set_target_bitmap(botao_abre_arquivo);
+	  al_clear_to_color(al_map_rgb(255, 255, 255));
 	al_draw_rectangle(0,0, al_get_bitmap_width(botao_abre_arquivo), al_get_bitmap_height(botao_abre_arquivo), al_map_rgb(0,0,0),10);  
  
     fila_eventos = al_create_event_queue();
     if (!fila_eventos)
     {
-        fprintf(stderr, "Falha ao inicializar o fila de eventos.\n");
-        al_destroy_display(janela);
-        return -1;
+	  fprintf(stderr, "Falha ao inicializar o fila de eventos.\n");
+	  al_destroy_display(janela);
+	  return -1;
     }
  
     // Dizemos que vamos tratar os eventos vindos do mouse
     al_register_event_source(fila_eventos, al_get_mouse_event_source());
+    al_register_event_source(fila_eventos, al_get_keyboard_event_source());
  
 
     return true;
@@ -376,18 +462,18 @@ void leituraarqgen(ListaGen **lista, char nomedoarquivo[]) {
 			if(feof(fp))
 				break;
 			if (!memcmp(tipo,"retangulo",2)) {
-			fscanf(fp,"%lf %lf %lf %lf %i %i %i %lf\n",&i,&j,&k,&l,&r,&g,&b,&thickness);
+			fscanf(fp,"%lf %lf %lf %lf %i %i %i %lf",&i,&j,&k,&l,&r,&g,&b,&thickness);
 			insereretang(lista,i,j,k,l,r,g,b,thickness); 
 			}
 			else if (!memcmp(tipo,"triangulo",2)) {
-			fscanf(fp,"%lf %lf %lf %lf %lf %lf %i %i %i %lf\n",&i,&j,&k,&l,&m,&n,&r,&g,&b,&thickness);
+			fscanf(fp,"%lf %lf %lf %lf %lf %lf %i %i %i %lf",&i,&j,&k,&l,&m,&n,&r,&g,&b,&thickness);
 			inseretriang(lista,i,j,k,l,m,n,r,g,b,thickness);
 			}
-        		else if (!memcmp(tipo,"circulo",2)) {
-		        fscanf(fp,"%lf %lf %lf %i %i %i %lf\n",&i,&j,&k,&r,&g,&b,&thickness);
+			else if (!memcmp(tipo,"circulo",2)) {
+			  fscanf(fp,"%lf %lf %lf %i %i %i %lf",&i,&j,&k,&r,&g,&b,&thickness);
 			inserecirc(lista,i,j,k,r,g,b,thickness);
 			}
-		        else {
+		    else {
 				printf("Erro ao identificar tipo\n");
 				break; 
 			}
@@ -395,7 +481,59 @@ void leituraarqgen(ListaGen **lista, char nomedoarquivo[]) {
 	}
 }
 
+void exibir_texto_centralizado2(char msg[20]) {
+    if (strlen(msg) > 0)
+    {
+        al_draw_text(font, al_map_rgb(0, 0, 255), LARGURA_TELA / 2,
+                     (ALTURA_TELA - al_get_font_ascent(font)) / 2,
+                     ALLEGRO_ALIGN_CENTRE, msg);
+    }
+}
 
+void exibir_texto_centralizado(){
+    if (strlen(str) > 0)
+    {
+        al_draw_text(font, al_map_rgb(0, 0, 255), LARGURA_TELA / 2,
+                     (ALTURA_TELA - al_get_font_ascent(font)) / 2,
+                     ALLEGRO_ALIGN_CENTRE, str);
+    }
+}
+
+void manipular_entrada(ALLEGRO_EVENT evento)
+{
+    if (evento.type == ALLEGRO_EVENT_KEY_CHAR)
+    {
+    	puts("teclado");
+        if (strlen(str) <= 16)
+        {
+            char temp[] = {evento.keyboard.unichar, '\0'};
+            if (evento.keyboard.unichar == ' ')
+            {
+                strcat(str, temp);
+            }
+            else if (evento.keyboard.unichar >= '0' &&
+                     evento.keyboard.unichar <= '9')
+            {
+                strcat(str, temp);
+            }
+            else if (evento.keyboard.unichar >= 'A' &&
+                     evento.keyboard.unichar <= 'Z')
+            {
+                strcat(str, temp);
+            }
+            else if (evento.keyboard.unichar >= 'a' &&
+                     evento.keyboard.unichar <= 'z')
+            {
+                strcat(str, temp);
+            }
+        }
+ 
+        if (evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE && strlen(str) != 0)
+        {
+            str[strlen(str) - 1] = '\0';
+        }
+    }
+}
 
 #endif
 
@@ -411,6 +549,7 @@ Lista* insere (Lista* l, int i) {
 	novo->prox = l;
 	return novo;
 }
+
 /* inserção no início */
 void insere2 (Lista** l, int i) {
 	Lista* novo = (Lista*) malloc(sizeof(Lista));
@@ -476,7 +615,7 @@ Lista* inicializa (void) {
 void imprime (Lista* l) {
 	Lista* p; /* variável auxiliar para percorrer a lista */
 	for (p = l; p != NULL; p = p->prox)
-	 	printf("end = %p info = %d prox = %p\n",p, p->info, p->prox);
+		printf("end = %p info = %d prox = %p\n",p, p->info, p->prox);
 	printf("--------------------------------------\n");
 }
 
@@ -528,9 +667,9 @@ void libera (Lista* l) {
 	Lista* p = l;
 	while (p != NULL) {
 		Lista* t = p->prox; /* guarda referência para o próximo elemento*/
- 		free(p); /* libera a memória apontada por p */
- 		p = t; /* faz p apontar para o próximo */
- 	}
+		free(p); /* libera a memória apontada por p */
+		p = t; /* faz p apontar para o próximo */
+	}
 }
 
 /* função retira2: retira elemento da lista */
