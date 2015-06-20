@@ -116,21 +116,44 @@ int compara_centro(void* a, void* b) {
 	}
 }
 
+Circulo * buscacentro(int n,float x, float y, Circulo* c) {
+	puts("Busca Centro");
+	int i;
+	for (i=0; i<n; i++) {
+		if((c[i].centro.x == x) && (c[i].centro.y == y)){
+			return &c[i];
+		}
+		if(c[i].centro.y > y){
+			return NULL;
+		}
+
+	}
+	return NULL;
+}
+
 void bolha_gen (int n, void* v, int tam, int(*cmp)(void*,void*)) {
 	puts("Bolha");
+	//Circulo* c;
 	int i, j;
+	void* p1;
+	void* p2;
 	for (i=n-1; i>0; i--) {
 		int fez_troca = 0;
 		for (j=0; j<i; j++) {
-			void* p1 = acessa(v,j,tam);
-			void* p2 = acessa(v,j+1,tam);
+			p1 = acessa(v,j,tam);
+			p2 = acessa(v,j+1,tam);
 			if (cmp(p1,p2)) {
 				troca(p1,p2,tam);
 				fez_troca = 1;
 			}
 		}
-	if (fez_troca == 0)   /* nao houve troca */
-	return;
+		/*if (tam == sizeof(Circulo)){
+			c = (Circulo*) p1;
+			printf("Centro do circulo%-2i = \t(%.2f,%.2f)\tRaio = %.2f\tCor : R = %3i, G = %3i, B = %3i\n",n-i,c[n-i].centro.x,c[i].centro.y,c[i].raio,c[i].cor.r,c[i].cor.g,c[i].cor.b);
+		}*/
+		if (fez_troca == 0)   /* nao houve troca */
+			return;
+
 	}
 }
 
@@ -154,17 +177,21 @@ void* acessa (void* v, int i, int tam) {
 int compara(const void* p1, const void* p2) {
 	Circulo *s1 = (Circulo*) p1;
 	Circulo *s2 = (Circulo*) p2;
-	//printf("Chegou %p, %p, %.2f, %.2f\n", s1, s2, s1->centro.x, s1->centro.y);
-	printf("Chegou %p, %p, %.2f, %.2f\n", s1, s2, s2->centro.x, s2->centro.y);
+	//printf("Chegou (%p, %p), %.2f, %.2f\n", s1, s2, s1->centro.x, s1->centro.y);
+	//printf("Chegou %p, %p, %.2f, %.2f\n", s1, s2, s2->centro.x, s2->centro.y);
 	if (s2->centro.x == s1->centro.x && s2->centro.y == s1->centro.y) {
 		return 0;
 	}
-	if (s2->centro.y >= s1->centro.y) { //conferir se condição está correta.
-		return -1; 
+	if (s2->centro.y == s1->centro.y){
+		if (s2->centro.x >= s1->centro.x) //conferir se condição está correta.
+			return -1; 
+		else
+			return +1;
 	}
-	else {
+	if (s2->centro.y >= s1->centro.y) //conferir se condição está correta.
+		return -1;
+	else
 		return +1;
-	}
 }
 
 void AutoCompleta(Circulo **c,int max, int n){

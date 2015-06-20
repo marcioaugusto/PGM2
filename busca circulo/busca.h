@@ -43,3 +43,4 @@ int compara(const void* p1, const void* p2);
 void mostraCirculos(const Circulo *c,int n);
 void mostraPontos(const Ponto2D *p,int n);
 void AutoCompleta(Circulo **c,int max, int n);
+Circulo * buscacentro(int n,float x, float y, Circulo* c);
