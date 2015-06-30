@@ -5,19 +5,22 @@
 *
 * Engenharia Eletrônica
 * Programação de Computadores II
-* IFSC - Semestre 2 15/
+* IFSC - Semestre 2015/1
 *
 * Simulador de tráfego
 *
 ******************************************************/
+void debug(){
+    return;
+}
 
 #include "final.h"
 
 int teste= 0;
+int restart = 1;
+
 int dx   = 0;
 int dy   = 0;
-int dir[25];
-
 
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
@@ -35,30 +38,31 @@ ALLEGRO_BITMAP *Sprite_car[NUM_CARS];
 
 //ALLEGRO_BITMAP *Sprite_car2  = NULL;
 ALLEGRO_EVENT evento;
-/*
-int mapa[16][16]={{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
-                  { 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
-                  { 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1},
-                  { 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1},
-                  { 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                  { 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1},
-                  { 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1},
-                  { 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1},
-                  { 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
-                  { 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1},
-                  { 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1},
-                  { 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1},
-                  { 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1},
-                  { 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
-                  { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
-*/
 
-char nome_arquivo[3][30]={{ "arquivos/Novo.png"},{ "arquivos/Fusca.png"},{ "arquivos/Vermelho.png"}};
+int mapa[18][24]={{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1},
+                  { 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                  { 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1},
+                  { 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                  { 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+                  { 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                  { 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                  { 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                  { 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                  { 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+                  { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-int mapa[MAPA_A][MAPA_L];
-static int lbl[1000];
-static Vertex parent[100];
-int mapa2[MAPA_A*MAPA_L][MAPA_A*MAPA_L];//matriz de adjacencia
+
+char nome_arquivo[NUM_CARS][30]={{ "arquivos/Novo.png"},{ "arquivos/Fusca.png"},{ "arquivos/Vermelho.png"},{ "arquivos/Viper.png"},{ "arquivos/Vermelho2.png"}};
+
+//*int mapa[MAPA_A][MAPA_L];
+Semaforo Semaforos[MAPA_A][MAPA_L];//matriz de Semaforos
+clock_t begin, end;
 
 bool inicializar(){
     int i,j;
@@ -110,7 +114,7 @@ bool inicializar(){
     }
     al_set_window_title(janela, "Simulador de Trafego");
     al_set_target_bitmap(al_get_backbuffer(janela));
-    al_clear_to_color(al_map_rgb(255, 255, 0));
+    al_clear_to_color(al_map_rgb(200, 100, 255));
 
     // Torna apto o uso de mouse na aplicação
     if (!al_install_mouse())
@@ -163,8 +167,8 @@ bool inicializar(){
         fprintf(stderr, "Falha ao criar Sprite_L.\n");
         return false;
     }
-    for(i=0;i<NUM_CARS;i++){
-        Sprite_car[i] = al_load_bitmap(nome_arquivo[i%NUM_CARS]);//nome_arquivo[i]);
+    for(i=0;i<NUM_CARS;i++){//cria diferentes tipos de carros
+        Sprite_car[i] = al_load_bitmap(nome_arquivo[i%NUM_CARS]);
         if (!Sprite_car[i]) {
             printf("Falha ao criar Sprite_car[%i].\n",i);
             return false;
@@ -180,25 +184,21 @@ bool inicializar(){
     al_set_target_bitmap(Sprite_cruz);
     al_draw_bitmap(Sprite_rua_v, 0,0, 0);
     al_draw_filled_rectangle(0,(SPRITE_A - RUA_L)/2,SPRITE_L,SPRITE_A - (SPRITE_A - RUA_L)/2 ,al_map_rgb(50, 50, 50));
-    //al_draw_rectangle(0,0, SPRITE_L, SPRITE_A, al_map_rgb(0, 0, 00),5);
 
     al_set_target_bitmap(Sprite_rua_h);
     al_clear_to_color(al_map_rgb(50, 255, 50));
     al_draw_filled_rectangle(0,(SPRITE_A - RUA_L)/2,SPRITE_L,SPRITE_A - (SPRITE_A - RUA_L)/2 ,al_map_rgb(50, 50, 50));
-    //al_draw_rectangle(0,0, SPRITE_L, SPRITE_A, al_map_rgb(0, 0, 00),5);
 
     al_set_target_bitmap(Sprite_T);
     al_draw_bitmap(Sprite_cruz, 0,0,0);
     al_draw_filled_rectangle(0,0,(SPRITE_L - RUA_L)/2,SPRITE_A ,al_map_rgb(50, 255, 50));
-    //al_draw_rectangle(0,0, SPRITE_L, SPRITE_A, al_map_rgb(0, 0, 00),5);
 
     al_set_target_bitmap(Sprite_L);
     al_draw_bitmap(Sprite_T, 0,0,0);
     al_draw_filled_rectangle(0,SPRITE_A - (SPRITE_A - RUA_L)/2,SPRITE_L,SPRITE_A ,al_map_rgb(50, 255, 50));
-    //al_draw_rectangle(0,0, SPRITE_L, SPRITE_A, al_map_rgb(0, 0, 00),5);
 
     // Alocamos o background 
-    background = al_create_bitmap(LARGURA_TELA, ALTURA_TELA);
+    background = al_create_bitmap(LARGURA_TELA,ALTURA_TELA);
     if (!background) {
         fprintf(stderr, "Falha ao criar background.\n");
         return false;
@@ -212,13 +212,17 @@ bool inicializar(){
         fprintf(stderr, "Falha ao criar botoes.\n");
         return false;
     }
-    for(i=0;i<MAPA_A;i++){
+    //*gera uma mapa aleatório
+    /*for(i=0;i<MAPA_A;i++){
         for(j=0;j<MAPA_L;j++){
-           mapa[i][j] = 1;//rand() % 2;
+            if (i%2 && (j == 0 || j == MAPA_L-1))
+                mapa[i][j] = 0;//rand() % 2 || rand() % 2;
+            else
+                mapa[i][j] = 1;
         }
-    }
-
-    // Colorimos o bitmap do botão de sair
+    }*/
+    
+    // Colorimos o bitmap os botoes
     al_set_target_bitmap(botao_sair);
     al_clear_to_color(al_map_rgb(255, 0, 0));
     al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,00),10);
@@ -241,16 +245,26 @@ bool inicializar(){
     return true;
 }
 
+/*Desaloca os recursos utilizados na aplicação*/
 void fechajanela(){
-    /*Desaloca os recursos utilizados na aplicação*/
+    int i;
     al_destroy_display(janela);
     al_destroy_event_queue(fila_eventos);
+    al_destroy_bitmap(Sprite_T);
+    al_destroy_bitmap(Sprite_L);
+    al_destroy_bitmap(Sprite_rua_h);
     al_destroy_bitmap(Sprite_rua_v);
     al_destroy_bitmap(Sprite_cruz);
     al_destroy_bitmap(background);
- 
+    for(i = 0;i<NUM_CARS;i++)
+        al_destroy_bitmap(Sprite_car[i]);
+
+
+
+
+
+
 	printf("Janela fechada\n");
-	//system("sleep 1");
 }
 
 void exibir_texto_centralizado(char msg[20]) {
@@ -261,31 +275,45 @@ void exibir_texto_centralizado(char msg[20]) {
 }
 
 void atualiza_tela(bool *pause,int mapa[MAPA_A][MAPA_L],Carro* car, int n) {
-    char msg[5];
-    int i;
+    char msg[6];
+    int i;//*,j;
     al_set_target_bitmap(background);
 
-        draw_map(background,mapa);                                       //desenha o mapa na janela
-    sprintf(msg, "%.1f", 1/((double) (end - begin) / CLOCKS_PER_SEC));   //converte o FPS para uma string
+    draw_map(background,mapa);                                         //desenha o mapa na janela
+    if(!*pause)
+        sprintf(msg, "%.1f", 1/((double) (end - begin) / CLOCKS_PER_SEC));   //converte o FPS para uma string
+    else 
+        strcpy(msg,"Pause");
     al_set_target_bitmap(al_get_backbuffer(janela));
-    al_clear_to_color(al_map_rgb(50, 255, 50));                          //pinta o fundo da janela de verde
-    al_draw_bitmap(background, /*dx*/0, /*dy*/0, 0);                     //desenha o background na janela
-    
+    al_clear_to_color(al_map_rgb(50, 255, 50));                         //pinta o fundo da janela de verde
+    al_draw_bitmap(background, dx, dy, 0);                              //desenha o background na janela
 
     /*desenha os carros*/
     for (i=0;i<n;i++){
         al_draw_scaled_rotated_bitmap(*(Sprite_car+i%NUM_CARS),al_get_bitmap_width(*(Sprite_car+i%NUM_CARS))/2,
-        al_get_bitmap_height(*(Sprite_car+i%NUM_CARS))/2,car[i].loc.x/*+al_get_bitmap_width(*(Sprite_car+i%NUM_CARS))/2*/,
-        car[i].loc.y/*+al_get_bitmap_height(*(Sprite_car+i%NUM_CARS))/2*/,0.25,0.25,dir[i]*M_PI/2,0);
+        al_get_bitmap_height(*(Sprite_car+i%NUM_CARS))/2,car[i].loc.x+dx,
+        car[i].loc.y+dy,RUA_L/250.,RUA_L/250.,car[i].ang,0);
     }
 
+    //*desenha os semaforos*/
+    /*
+    for (i=0;i<MAPA_A;i++){
+        for (j=0;j<MAPA_L;j++){
+            if(Semaforos[i][j].on){                   //se posição (x,y) semaforo
+                //printf("Semaforo [%i][%i] = %i\n",i,j,Semaforos[i][j].on);
+                al_draw_rectangle(DESLOC + j*SPRITE_L + dx + (SPRITE_A - RUA_L)/2,DESLOC + (i+1./2)*SPRITE_A + dy + - RUA_L/2,DESLOC + j*SPRITE_L + dx + RUA_L/2  + SPRITE_A/2,DESLOC + i*SPRITE_A + dy + RUA_L/2 + SPRITE_A/2, al_map_rgb(255, 0, 00),0);
+                //al_draw_bitmap(Sprite_rua_h, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
+            }
+        }
+    }
+    */
     al_draw_bitmap(botao_sair, LARGURA_TELA - BOTAO_L,
         ALTURA_TELA - BOTAO_A -DESLOC, 0);                               //desenha o botao sair
     al_draw_bitmap(botao_salvar, LARGURA_TELA - BOTAO_L,
         ALTURA_TELA - 2*BOTAO_A -DESLOC, 0);                             //desenha o botao salvar
     al_draw_bitmap(botao_criar, LARGURA_TELA - BOTAO_L,
         ALTURA_TELA - 3*BOTAO_A -DESLOC, 0);                             //desenha o botao criar
-    al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0 , *pause== 0?msg:"Pausado");//escreve o FPS ou pausado
+    al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0,&msg[0]);    //escreve o FPS ou pausado///* problema nessa função
     al_flip_display();                                                   //atualiza janela
 }
 
@@ -301,8 +329,13 @@ int leituraArq(Carro **c, char nomedoarquivo[]) {
     printf("Arquivo aberto com sucesso.\n");
     fscanf(fp,"%s %i\n",tipo,&n);
     
-    if (!strcmp(tipo,"Carro"))
+    if (!strcmp(tipo,"Carro")){
         *c = (Carro*) malloc(n*sizeof(Carro));                           //cria vetor de n elementos do tipo Carro
+        if (*c == NULL){
+            printf("%s\n", "Espaço insuficiente");
+            return 0;
+        }
+    }
     else{
         printf("%s\n", "Arquivo em formato não esperado\n");
         return 0;
@@ -313,19 +346,26 @@ int leituraArq(Carro **c, char nomedoarquivo[]) {
     }
     
     for(i = n-1;i>=0;i--){
-        fscanf(fp,"%d %d\n",&inicio,&dest);
+        fscanf(fp,"%i %i\n",&inicio,&dest);
         (*c+i)->id = i;
-        (*c+i)->inicio = inicio;
-        (*c+i)->destino = dest;
-        (*c+i)->loc.y = ((inicio-1)/MAPA_L)*SPRITE_A + SPRITE_A/2 + DESLOC;
-        (*c+i)->loc.x = ((inicio-1)%MAPA_L)*SPRITE_L + SPRITE_L/2 + DESLOC;
-        (*c+i)->velocidade.x = 0;
-        (*c+i)->velocidade.y = 0;
+        if (inicio < MAPA_A*MAPA_L - 1)//para não colocar o carro fora do mapa
+            (*c+i)->inicio = inicio;
+        else
+            (*c+i)->inicio = 0;
+
+        if (dest<MAPA_A*MAPA_L - 1)//para não colocar o carro fora do mapa
+            (*c+i)->dest = dest;
+        else 
+            (*c+i)->dest = 0;
+        printf("(*c+%i)->loc.y = %.2f\n, (*c+%i)->loc.x = %.2f\n",i,(*c+i)->loc.y,i,(*c+i)->loc.x );
+        (*c+i)->velo = 0;
+        (*c+i)->path_num = inicio;
     }
     bolha_gen(n,(void*) *c,sizeof(Carro),compara_loc);                   //organiza elementos do vetor pela localizacao
     return n;
 }
 
+/*cria um arquivo com o vetor de carros*/
 void CriaArq(Carro *c,int i,char nomedoarquivo[]){
     printf("Arquivo Salvo\n");
     FILE *fp;
@@ -333,65 +373,57 @@ void CriaArq(Carro *c,int i,char nomedoarquivo[]){
     fprintf(fp, "%s %i\n", "Carro",i);
     i--;
     for(;i>=0;i--){
-        fprintf(fp,"%d %d\n",c[i].inicio,c[i].destino);
-    }                     //cria um arquivo com os carros
+        fprintf(fp,"%d %d\n",c[i].inicio,c[i].dest);
+    }                     
 }
 
 int simulacao(Carro *car,int n){
+    
     int i;
     int sair =0;
     int salvar = 0;
     bool pause = 0;
     bool criar;
     Digraph dig;
-    Vertex w;
+    //*Vertex w;
     dig = DIGRAPHinit(MAPA_L*MAPA_A);
-    converte_mapa(mapa,dig->adj);
+    if(dig == NULL) return 0;//se a criacao do digrafo falhou
+    converte_mapa(mapa,dig);
+    //*dig = DIGRAPHrand1(MAPA_A*MAPA_L,MAPA_L*MAPA_A*MAPA_L);
     for(i=0;i<n;i++){
-        definetrajeto(dig,car+i);
-/*
-            for (w = (car+i)->destino; w != (car+i)->inicio; w = (car+i)->path[w])
-               printf( "%d-", w);
-            printf( "%d\n", car[i].inicio);
-*/
+        if(definetrajeto(dig,car+i)){//*
+           /* //for (w = (car+i)->inicio; w != (car+i)->dest; w = (car+i)->path[w])
+                printf( "%d-", w);
+                printf( ">%d\n", car[i].dest);
+        */}
+        else
+            printf("%i não tem caminho para %i\n",car[i].inicio,car[i].dest);
     }
-    DIGRAPHshow( dig);
+    //*DIGRAPHshow( dig);
     while(!sair){                                                        //loop da simulação
         begin = clock();
         while (!al_is_event_queue_empty(fila_eventos)) {                 //loop para tratamento de eventos
-             al_wait_for_event(fila_eventos, &evento);                   //atualiza evento pendente
+            al_wait_for_event(fila_eventos, &evento);                   //atualiza evento pendente
             if (evento.type == ALLEGRO_EVENT_KEY_DOWN || evento.keyboard.repeat){
                 if (evento.keyboard.keycode == ALLEGRO_KEY_ESCAPE){      //se apertado esc
                         sair = 1;
                     printf("%s\n", "KEY");
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_RIGHT){  //se apertado botao direita
-                    dir[teste] = 0;
-                    //dx +=10;
-                    car[teste].loc.x +=5;
+                    dx-= 10;
                     printf("%s\n", "KEY");
-                    printf("loc.x = %i\n", car[teste].loc.x);
                 }
                  else if (evento.keyboard.keycode == ALLEGRO_KEY_LEFT){  //se apertado botao esquerda
-                    dir[teste] = 2;
-                    //dx -=10;
-                    car[teste].loc.x -=5;
+                    dx+=10;
                     printf("%s\n", "KEY <-");
-                    printf("loc.x = %i\n", car[teste].loc.x);
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_UP){     //se apertado botao cima
-                    dir[teste] = 3;
-                    //dy +=10;
-                    car[teste].loc.y -=5;
+                    dy+=10;
                     printf("%s\n", "KEY");
-                    printf("loc.y = %i\n", car[teste].loc.y);
                 }
                  else if (evento.keyboard.keycode == ALLEGRO_KEY_DOWN){  //se apertado botao baixo
-                    dir[teste] = 1;
-                    //dy -=10;
-                    car[teste].loc.y +=5;
+                    dy-=10;
                     printf("%s\n", "KEY");
-                    printf("loc.y = %i\n", car[teste].loc.y);
                 }
             }
             if (evento.type == ALLEGRO_EVENT_KEY_CHAR  || evento.keyboard.repeat) {
@@ -401,21 +433,16 @@ int simulacao(Carro *car,int n){
                 switch(evento.keyboard.unichar){                         //tratamento para as letras
                     case 't':
                     case 'T':
-                        if(teste < 25)
-                            teste+=1;
-                        else teste = 0;
+                       teste = !teste;
                         printf("Teste = %i\n", teste);
                         break;
                     case 'p':
                     case 'P':
                         pause = !pause;
                         break;
-                    case 'q':
-                    case 'Q':
-                        //printf("Define trajeto %i.\n",definetrajeto(car[0], mapa, car[0].inicio.x,car[0].inicio.y,0));
-                        /*printf("Salvar e sair.\n");
-                        salvar = 1;
-                        sair =1;*/
+                    case 'r':
+                    case 'R':
+                        restart = 1;
                         break;
                     case 'c':
                     case 'C':
@@ -423,29 +450,24 @@ int simulacao(Carro *car,int n){
                         break;
                     case 'd':
                     case 'D':
-                        dir[1] = 0;
-                        car[1].loc.x +=10;
+                        
                         break;
                     case 'a':
                     case 'A':
-                        dir[1] = 2;
-                        car[1].loc.x -=10;
-                        break;
+                        
                     case 'w':
                     case 'W':
-                        dir[1] = 3;
-                        car[1].loc.y -=10;
+                        
                         break;
                     case 's':
                     case 'S':
-                        dir[1] = 1;
-                        car[1].loc.y +=10;
+                        
                         break;
                     default:
                         break;
                 }
             }
-            else if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {            //se evento foi um click
+            else if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){            //se evento foi um click
                 if (evento.mouse.x >= LARGURA_TELA - BOTAO_L){
                     if(evento.mouse.y <= ALTURA_TELA -DESLOC && evento.mouse.y >= ALTURA_TELA - BOTAO_A -DESLOC) //se o click foi sobre o botão sair
                         sair = 1;
@@ -464,14 +486,20 @@ int simulacao(Carro *car,int n){
             printf("Criar\n");
             criar = 0;
         }
+        if (!pause)
+            mov_car(car,n);   
         while(((double) (end - begin) / CLOCKS_PER_SEC)<(1./FPS) && !pause){    //define FPS maxima   
             end = clock();  
         }
-        atualiza_tela(&pause,mapa,car,n);                                         //atualiza a tela
+        atualiza_tela(&pause,mapa,car,n);                                       //atualiza a tela
     }
+    free(car);
+    free(*(dig->adj));
+    free(dig);
     return salvar;
 }
 
+/*Gera um Pop-up*/
 int PopUp(char frase[]){
     al_draw_filled_rectangle(LARGURA_TELA/4.,ALTURA_TELA/4.,LARGURA_TELA*3/4.,ALTURA_TELA*3/4.,al_map_rgb(255, 255, 255));
     al_draw_text(font, al_map_rgb(0, 0, 0), LARGURA_TELA / 2,
@@ -493,7 +521,8 @@ int PopUp(char frase[]){
     }
 }
 
-void draw_map(ALLEGRO_BITMAP *bmp,int mapa[MAPA_A][MAPA_L]){                    //funcao que desenha o mapa na tela
+/*Desenha o mapa*/
+void draw_map(ALLEGRO_BITMAP *bmp,int mapa[MAPA_A][MAPA_L]){
     int i,j,n=0;
     al_set_target_bitmap(bmp);
     al_clear_to_color(al_map_rgb(50, 255, 50));                                     //pinta o fundo de verde
@@ -564,7 +593,8 @@ void draw_map(ALLEGRO_BITMAP *bmp,int mapa[MAPA_A][MAPA_L]){                    
     }
 }
 
-void bolha_gen (int n, void* v, int tam, int(*cmp)(const void*,const void*)) {  //organiza vetor
+/*organiza o vetor*/
+void bolha_gen (int n, void* v, int tam, int(*cmp)(const void*,const void*)) {
     int i, j;
     void* p1;
     void* p2;
@@ -584,8 +614,9 @@ void bolha_gen (int n, void* v, int tam, int(*cmp)(const void*,const void*)) {  
     }
 }
 
-int compara_loc(const void* p1, const void* p2) {                               //compara localizacao
-    Carro *s1 = (Carro*) p1;                                                    //converte ponteiro para tipo carro
+/*compara a localização de dois carros*/
+int compara_loc(const void* p1, const void* p2) {
+    Carro *s1 = (Carro*) p1;                               //converte ponteiro para tipo carro
     Carro *s2 = (Carro*) p2;
     if (s2->loc.x == s1->loc.x && s2->loc.y == s1->loc.y) {
         return 0;
@@ -608,7 +639,8 @@ void* acessa (void* v, int i, int tam) {                                        
     return (void*)t;
 }
 
-void troca (void* a, void* b, int tam){                                         //troca duas posicoes de memoria
+/*troca duas posicoes de memoria*/
+void troca (void* a, void* b, int tam){
     char* v1 = (char*) a;
     char* v2 = (char*) b;
     int i;
@@ -618,37 +650,53 @@ void troca (void* a, void* b, int tam){                                         
         v2[i] = temp;
     }
 }
-
-void converte_mapa(int mapa[MAPA_A][MAPA_L],int **adj){ //converte uma matriz de mapa para uma matriz de adjacencia
+/*converte uma matriz de mapa para uma matriz de adjacencia  e gera a matriz de semaforos*/
+void converte_mapa(int mapa[MAPA_A][MAPA_L],Digraph dig){ 
     int x,y,id,n;
     printf("\n");
     for(x=0;x<MAPA_A;x++){
         for(y=0;y<MAPA_L;y++){
-            id = ((y)+(x)*MAPA_L)+1;
-            if(id%MAPA_L){                              //se não estiver na borda direita
-                adj[id-1][id] = 1;}                   //N tem caminho para N+1
-            if((id-1)%MAPA_L){                          //se não estiver na borda esquerda
-                adj[id-1][id-2] = 1;}                 //N tem caminho para N+1
-            if(id>MAPA_L){                              //senão estiver na primeira linha
-                adj[id-1][id-1-MAPA_L] = 1;}          //N tem caminho para linha de cima
-            if(id<=(MAPA_A-1)*MAPA_L){                  //se não estiver na ultima linha
-                adj[id-1][id-1+MAPA_L] = 1;}          //N tem caminho para linha de baixo
+            if (mapa[x][y]){
+                n = 0;                                      //n conta o numero de ruas para avaliar a necessidade de semaforo
+                id = ((y)+(x)*MAPA_L)+1;                    //cria o id da posição, começa em 1
+                if(id%MAPA_L){         //se não estiver na borda direita e for ímpar
+                    dig->adj[id-1][id] = 1;                 //N tem caminho para N+1
+                    n ++;
+                }
+                if((id-1)%MAPA_L){                          //se não estiver na borda esquerda e for par
+                    dig->adj[id-1][id-2] = 1;               //N tem caminho para N1
+                    n ++;
+                }
+                if(id>MAPA_L && id%2){                              //senão estiver na primeira linha
+                    dig->adj[id-1][id-1-MAPA_L] = 1;        //N tem caminho para linha de cima
+                    n ++;
+                }
+                if(id<=(MAPA_A-1)*MAPA_L){                  //se não estiver na ultima linha
+                    dig->adj[id-1][id-1+MAPA_L] = 1;        //N tem caminho para linha de baixo
+                    n ++;
+                }
+                if(n >=3)
+                    Semaforos[x][y].on =1;
+                else
+                    Semaforos[x][y].on =0;
+            }
         }
     }
     for(x=0;x<MAPA_A;x++){                              //zera as barreiras(0 na matriz do mapa)
         for(y=0;y<MAPA_L;y++){
             id = ((y)+(x)*MAPA_L)+1;                    //atualiza o id
-            if(!mapa[x][y]){                            //se mapa for 0 entao cria a barreira no mapa2
+            if(!mapa[x][y]){                            //se mapa for 0 entao cria a barreira na matriaz de adjacencia
                 printf("zera %i\n", id);                //informa linha/coluna zerada
                 for(n=0;n<MAPA_L*MAPA_A;n++){
-                    adj[id-1][n] = 0;                 //zera linha
-                    adj[n][id-1] = 0;                 //zera coluna
+                    dig->adj[id-1][n] = 0;                 //zera linha
+                    dig->adj[n][id-1] = 0;                 //zera coluna
                 }
             }
         }
     }
 }
 
+/*Imprime a matriz de adjacencia do digrafo*/
 void DIGRAPHshow( Digraph G) { 
     Vertex v, w; 
     for (v = 0; v < G->V; v++) {
@@ -662,26 +710,43 @@ void DIGRAPHshow( Digraph G) {
 
 Digraph DIGRAPHinit( int V) { 
     Digraph G = malloc( sizeof *G);
+    if (G == NULL){
+        printf("%s\n", "Espaço insuficiente");
+        return NULL;
+    }
     G->V = V; 
     G->A = 0;
     G->adj = MATRIXint( V, V, 0);
+    if (G->adj == NULL)
+        return NULL;
     return G;
 }
 
 int **MATRIXint( int r, int c, int val){ 
     Vertex i, j;
     int **m = malloc( r * sizeof (int *));
-    for (i = 0; i < r; i++)
+    if (*m == NULL){
+        printf("%s\n", "Espaço insuficiente");
+        return NULL;
+    }
+    for (i = 0; i < r; i++){
         m[i] = malloc( c * sizeof (int));
+        if (m[i] == NULL){
+            printf("%s\n", "Espaço insuficiente");
+            return NULL;
+        }
+    }
     for (i = 0; i < r; i++)
         for (j = 0; j < c; j++)
             m[i][j] = val;
     return m;
 }
 
+/*Gera um digrafo aleatório*/
 Digraph DIGRAPHrand1( int V, int A){ 
     Vertex v, w;
     Digraph G = DIGRAPHinit( V);
+    if (G == NULL) return NULL;
     while (G->A < A) {
         v = randV( G);
         w = randV( G);
@@ -697,6 +762,7 @@ Vertex randV( Digraph G){
     return r * G->V;
 }
 
+/*Insere um arco ao digrafo*/
 void DIGRAPHinsertA( Digraph G, Vertex v, Vertex w){ 
     if (G->adj[v][w] == 0) {
         G->adj[v][w] = 1; 
@@ -704,102 +770,102 @@ void DIGRAPHinsertA( Digraph G, Vertex v, Vertex w){
     }
 }
 
-int definetrajeto( Digraph G, Carro *car){//s posicao inicial, t posicao final
+/*Define o tajeto a ser tracado pelo carro*/
+int definetrajeto( Digraph G, Carro *car){
     Vertex v;
-    for (v = 0; v < G->V; v++) 
+    int lbl[MAPA_L*MAPA_A+1];
+    //*printf("G->V = %i\n", G->V);
+    for (v = 0; v < G->V; v++)
         lbl[v] = 0;
-    pathR( G, car->inicio);
-    if (lbl[car->destino] == 0) return 0;
+    pathR( G, car->dest,car->path,lbl);
+    if (lbl[car->inicio] == 0) return 0;
     else return 1;
 }
 
-void pathR( Digraph G, Vertex v){
+void pathR( Digraph G, Vertex v,int *parent,int *lbl){
     Vertex w;
     lbl[v] = 1;
     for (w = 0; w < G->V; w++){
         if (G->adj[v][w] == 1 && lbl[w] == 0) {
             parent[w] = v;
-            pathR( G, w);
+            pathR( G, w,parent,lbl);
         }
     }
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void draw_map2(ALLEGRO_BITMAP *bmp,int mapa[MAPA_A][MAPA_L]){
-    int i,j,n=0;
-    al_set_target_bitmap(bmp);
-    al_clear_to_color(al_map_rgb(50, 255, 50));
-    for (i=0;i<MAPA_A;i++){
-        for (j=0;j<MAPA_L;j++){
-            if(mapa[i][j]){
-                n = 0;
-                if(j>0)
-                    if(mapa[i][j-1])
-                        n += 1;
-                if(i>0)
-                    if(mapa[i-1][j])
-                        n += 2;
-                if(i<MAPA_A-1)
-                    if (mapa[i+1][j])
-                        n += 4;
-                if(j<MAPA_L-1)
-                    if (mapa[i][j+1])
-                        n += 8;
-                switch(n){
-                    case 0:
-                        break;
-                    case 9:
-                        mapa[i][j] = 2;
-                    case 8:
-                    case 1:
-                        al_draw_bitmap(Sprite_rua_h, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
-                        break;
-                    case 6:
-                        mapa[i][j] = 2;
-                    case 4:
-                    case 2:
-                        al_draw_bitmap(Sprite_rua_v, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
-                        break;
-                    case 15:
-                        mapa[i][j] = 4;
-                        al_draw_bitmap(Sprite_cruz, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
-                        break;
-                    case 7:
-                        mapa[i][j] = 3;
-                        al_draw_rotated_bitmap(Sprite_T,SPRITE_L/2,SPRITE_A/2, DESLOC + j*SPRITE_L+SPRITE_L/2,DESLOC + i*SPRITE_A+SPRITE_A/2,2*M_PI/2, 0);
-                        break;
-                    case 11:
-                        mapa[i][j] = 3;
-                        al_draw_rotated_bitmap(Sprite_T,SPRITE_L/2,SPRITE_A/2, DESLOC + j*SPRITE_L+SPRITE_L/2,DESLOC + i*SPRITE_A+SPRITE_A/2,3*M_PI/2, 0);
-                        break;
-                    case 13:
-                        mapa[i][j] = 3;
-                        al_draw_rotated_bitmap(Sprite_T,SPRITE_L/2,SPRITE_A/2, DESLOC + j*SPRITE_L+SPRITE_L/2,DESLOC + i*SPRITE_A+SPRITE_A/2,1*M_PI/2, 0);
-                        break;
-                    case 14:
-                        mapa[i][j] = 3;
-                        al_draw_bitmap(Sprite_T, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
-                        break;
-                    case 3:
-                        mapa[i][j] = 2;
-                        al_draw_rotated_bitmap(Sprite_L,SPRITE_L/2,SPRITE_A/2, DESLOC + j*SPRITE_L+SPRITE_L/2,DESLOC + i*SPRITE_A+SPRITE_A/2,3*M_PI/2, 0);
-                        break;
-                    case 5:
-                        mapa[i][j] = 2;
-                        al_draw_rotated_bitmap(Sprite_L,SPRITE_L/2,SPRITE_A/2, DESLOC + j*SPRITE_L+SPRITE_L/2,DESLOC + i*SPRITE_A+SPRITE_A/2,2*M_PI/2, 0);
-                        break;
-                    case 10:
-                        mapa[i][j] = 3;
-                        al_draw_bitmap(Sprite_L, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
-                        break;
-                    case 12:
-                        mapa[i][j] = 2;
-                        al_draw_rotated_bitmap(Sprite_L,SPRITE_L/2,SPRITE_A/2, DESLOC + j*SPRITE_L+SPRITE_L/2,DESLOC + i*SPRITE_A+SPRITE_A/2,1*M_PI/2, 0);
-                        break;
-                    default:
-                        al_draw_bitmap(Sprite_rua_v, DESLOC + j*SPRITE_L,DESLOC + i*SPRITE_A, 0);
-                        break;
-                }
+
+/*faz a movimentação dos carros*/
+void mov_car(Carro *car,int n){
+    int i;
+    float posx,posy;
+    int  pathx,pathy;
+    for (i=0;i<n;i++){
+        posx =  ((car[i].loc.x - DESLOC)/SPRITE_L)-1./2;
+        posy =  ((car[i].loc.y -DESLOC)/SPRITE_A) - 1./2;
+        pathy = car[i].path[car[i].path_num]/MAPA_L;
+        pathx = car[i].path[car[i].path_num]%MAPA_L;
+        //printf("posx = %.1f, posy = %.1f\n",posx,posy );
+        if (((int)posx + (int)posy*MAPA_L) == car[i].dest){//se chegou no destino
+            //printf("%i == %i",(int)(posx + posy*MAPA_L),car[i].dest );
+            printf("Carro %i Chegou ao destino->%i\n",i,car[i].dest);
+            car[i].ang = 3*M_PI/2;
+            car[i].velo = 0;
+            car[i].loc.y = MAPA_A*SPRITE_A+50;
+            car[i].loc.x = 100+30*i;
+        } else
+        if (posx ==  pathx && posy == pathy){//esta na esquina certa
+            car[i].path_num = car[i].path[car[i].path_num];
+            //printf("%s[%i]\n", "prox ->",car[i].path[(car[i].path_num)]);
+            car[i].velo = 0;
+        }
+        if (posy == pathy){
+            if(pathx == posx+1){//leste
+                car[i].ang = 0;
+                car[i].velo = 1;//rand()%2+1;
+                //*printf("%s->%i\n", "Leste",car[i].path[car[i].path_num]);
+            }else if(pathx == posx-1){//oeste
+                //*printf("%s->%i\n", "Oeste",car[i].path[car[i].path_num]);
+                car[i].ang =  M_PI;
+                car[i].velo = 1;//rand()%2+1;
+            }
+        }else
+        if (posx == pathx){
+            debug();
+            if(pathy == posy-1){//norte
+                //*printf("%s->%i\n", "Norte",car[i].path[car[i].path_num]);
+                car[i].ang =  3*M_PI/2;
+                car[i].velo = 1;//rand()%2+1;
+            }else if(pathy == posy+1){//sul
+                //*printf("%s->%i\n", "Sul",car[i].path[car[i].path_num]);
+                car[i].ang =  M_PI/2;
+                car[i].velo = 1;//rand()%2+1;
             }
         }
+        car[i].loc.x += car[i].velo*cos(car[i].ang);
+        car[i].loc.y += car[i].velo*sin(car[i].ang);
+
     }
+    if (restart == 1){
+        for (i=0;i<n;i++){
+            car[i].loc.x = (car[i].inicio%MAPA_L)*SPRITE_L + SPRITE_L/2 + DESLOC;
+            car[i].loc.y = (car[i].inicio/MAPA_L)*SPRITE_A + SPRITE_A/2 + DESLOC;
+            car[i].velo  = 0;
+            car[i].ang   = 0;
+            restart      = 0;
+            car[i].path_num = car[i].inicio;
+        }
+        //*return;
+    }
+}
+
+int ta_perto(Carro *car,int n,int c,int d){//se os pontos estiverem proximos em x retorna 1, se em y retorna 2, se não retorna 0
+    int i;
+    for(i=0;i<n;i++){
+        if((car[c].loc.y == car[i].loc.y))
+            if(((car[c].loc.x - d*car[i].loc.x)<= 2*RUA_L) && (i !=c))
+                return 1;
+        if((car[c].loc.x == car[i].loc.x))
+            if (((car[c].loc.y - d*car[i].loc.y)<= 2*RUA_L) && (i !=c))
+                return 2;
+    }
+    return 0;
 }

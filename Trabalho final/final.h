@@ -27,37 +27,36 @@
 #define verde 	 		1
 
 /*CONFIGURAÇÕES*/
-#define FPS 			60
-#define MAPA_L 			5
-#define MAPA_A 			4
-#define SPRITE_A 		200
-#define SPRITE_L 		200
+#define NUM_CARS		5
+#define FPS 			800
+#define DESLOC  		10
+#define RUA_L   		25
+#define MAPA_L 			24//23
+#define MAPA_A 			14//deve ser no maximo 13 para o correto funcionamento
+#define SPRITE_A 		50
+#define SPRITE_L 		50
 #define BOTAO_A 		50
 #define BOTAO_L 		100
-#define LARGURA_TELA	(MAPA_L*SPRITE_L+100)
-#define ALTURA_TELA 	(MAPA_A*SPRITE_A+100)
-#define NUM_CARS		3
-
-#define RUA_L   		100
-#define DESLOC  		10
-
-clock_t begin, end;
+#define LARGURA_TELA	1200
+#define ALTURA_TELA 	700
 
 typedef int Vertex;
 
 struct ponto2D{
-    int  x;								//localizacao x de um ponto localizado na tela
-    int  y;								//localizacao y de um ponto localizado na tela
+    float  x;							//localizacao x de um ponto localizado na tela
+    float  y;							//localizacao y de um ponto localizado na tela
 };
 typedef struct ponto2D Ponto2D;
 
 struct carro{
 	int id;								//indentidade
 	Ponto2D loc;						//localizacao atual do carro
-	Vertex inicio;						//localizacao inicial do carro
-	Vertex destino;					    //destino do carro
-	Ponto2D velocidade;					//velocidade atual
-	int path[50];						//vetor que indica quais as direcoes tomar para o menor caminho
+	Vertex inicio;						//posicao inicial do carro
+	Vertex dest;					    //destino do carro
+	float velo; 						//modulo da velocidade
+	float ang;							//angulo
+	int path[MAPA_A*MAPA_L];			//vetor que indica o caminho
+	int path_num;
 };
 typedef struct carro Carro;
 
@@ -67,20 +66,21 @@ struct digraph {
    int **adj; 
 };
 typedef struct digraph *Digraph;
+
+struct semaforo{
+	int  on;
+	int  oeste,leste,norte,sul;			//indica quais sinais estao verdes(1) ou vermelhos(0)
+};
+typedef struct semaforo Semaforo;
+
 /*
 struct frota{
 	int n;
 	Carro *car;
 };
 typedef struct frota Frota;
-
-struct semaforo{
-	int id;								//indentidade
-	bool oeste,leste,norte,sul;			//indica quais sinais estao verdes ou vermelhos
-};
-typedef struct semaforo Semaforo;
-
-
+*/
+/*
 struct rua{
 	int id;								//indentidade
 	Ponto2D inicio;						//define onde inicia a rua
@@ -112,13 +112,15 @@ void  bolha_gen (int n, void* v, int tam, int(*cmp)(const void*,const void*));
 int   compara_loc(const void* p1, const void* p2);
 void* acessa (void* v, int i, int tam);
 void  troca (void* a, void* b, int tam);
-void converte_mapa(int mapa[MAPA_A][MAPA_L],int **mapa2);
+void converte_mapa(int mapa[MAPA_A][MAPA_L],Digraph dig);
 void DIGRAPHshow( Digraph G);
 Digraph DIGRAPHinit( int V);
 int **MATRIXint( int r, int c, int val);
 Digraph DIGRAPHrand1( int V, int A);
 Vertex randV( Digraph G);
 void DIGRAPHinsertA( Digraph G, Vertex v, Vertex w);
-void pathR( Digraph G, Vertex v);
+void pathR( Digraph G, Vertex v,int *parent,int *lbl);
+void mov_car(Carro *car,int n);
+int ta_perto(Carro *car,int n,int c,int d);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //int   PopUp(char frase[]);
