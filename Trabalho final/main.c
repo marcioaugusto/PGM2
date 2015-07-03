@@ -24,9 +24,6 @@ int main(void){
 		return 0;
 	}
 	n = leituraArq(&car, "arquivos/Carros.car");
-	exibir_texto_centralizado("Seja bem vindo ao simulador de tráfego");
-	al_flip_display();
-	al_rest(2);
 	if(!n) return 0;//se a leitura do arquivo falhou
 	if (simulacao(car,n))
 		CriaArq(car,n,"arquivos/Carros.car");

@@ -30,7 +30,7 @@
 #define NUM_CARS		5
 #define FPS 			800
 #define DESLOC  		10
-#define RUA_L   		25
+#define RUA_L   		15
 #define MAPA_L 			24//23
 #define MAPA_A 			14//deve ser no maximo 13 para o correto funcionamento
 #define SPRITE_A 		50
@@ -105,7 +105,7 @@ void  fechajanela();
 void  exibir_texto_centralizado(char msg[20]);
 int   leituraArq(Carro **c, char nomedoarquivo[]);
 void  CriaArq(Carro *c,int n,char nomedoarquivo[]);
-void  atualiza_tela(bool *pause,int mapa[MAPA_A][MAPA_L],Carro* car,int n);
+void  atualiza_tela(bool *pause,int mapa[MAPA_A][MAPA_L],Carro* car,int n,int dx, int dy);
 int   simulacao(Carro *car,int n);
 void  draw_map(ALLEGRO_BITMAP *bmp,int mapa[MAPA_A][MAPA_L]);
 void  bolha_gen (int n, void* v, int tam, int(*cmp)(const void*,const void*));
@@ -120,7 +120,9 @@ Digraph DIGRAPHrand1( int V, int A);
 Vertex randV( Digraph G);
 void DIGRAPHinsertA( Digraph G, Vertex v, Vertex w);
 void pathR( Digraph G, Vertex v,int *parent,int *lbl);
-void mov_car(Carro *car,int n);
+void mov_car(Carro *car,int n, bool *restart);
 int ta_perto(Carro *car,int n,int c,int d);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //int   PopUp(char frase[]);
+void trata_evento(bool *pause, bool *criar,bool *restart, bool *salvar, bool *sair,int *dx, int *dy);
+void criar_mapa(bool *criar,int *dx, int *dy);
